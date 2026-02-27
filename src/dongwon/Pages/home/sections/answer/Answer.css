@@ -1,0 +1,140 @@
+.answer {
+  padding-top: 100px;
+  background-color: #11141a;
+}
+
+/*answer-video-box  */
+.answer .answer-video-box {
+  padding: 0px 12px;
+  position: relative;
+}
+
+.answer-video-box video {
+  width: 100%;
+  height: 100%;
+  padding: 10px 0px;
+
+  height: 420px;
+  overflow: hidden;
+
+  object-fit: cover;
+  object-position: center 30%;
+}
+
+.answer-video-box .answer-title {
+  padding: 10px 0 20px 0;
+}
+.answer-video-box::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: rgba(189, 189, 189, 0.425);
+}
+
+/* scroll-p-box */
+.scroll-p-box {
+  color: white;
+  padding: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.scroll-p-box p {
+  font-size: 1.4vw;
+  line-height: 1.6;
+  font-weight: 700;
+}
+
+.char {
+  opacity: 0.4;
+}
+.scroll-p-box svg {
+  font-size: 5vw;
+  transform: rotate(-45deg);
+}
+
+/*  answer-plan */
+.answer-plan {
+  display: flex;
+  align-items: center;
+  padding-top: 120px;
+}
+
+.answer-plan .plan-video {
+  position: relative;
+  width: 48%;
+  display: flex;
+}
+
+.plan-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.plan-video .video-fade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      to bottom,
+      #11141a 0%,
+      rgba(12, 17, 23, 0.3) 25%,
+      rgba(12, 17, 23, 0) 50%,
+      rgba(12, 17, 23, 0.3) 75%,
+      #11141a 100%
+    ),
+    linear-gradient(
+      to right,
+      #11141a 0%,
+      rgba(12, 17, 23, 0.3) 25%,
+      rgba(12, 17, 23, 0) 50%,
+      rgba(12, 17, 23, 0.3) 75%,
+      #11141a 100%
+    );
+}
+.answer-plan .plan-text-con {
+  color: white;
+  flex: 1;
+}
+
+.plan-text-con .plan-text-box{
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  padding: 12px 30px 100px 0px;
+}
+
+.plan-text-box .text-percent {
+  display: flex;
+  gap: 10px;
+  align-items: end;
+  align-self: flex-end;
+  font-size: 11vw;
+  line-height: 1;
+}
+.text-percent svg {
+  display: block;
+}
+
+.plan-text-box span{
+  font-size: 4vw;
+}
+.plan-text-box .text-name{
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  gap: 5px;
+}
+
+.plan-text-box .text-name p {
+  font-size: 20px;
+}
+.plan-text-box .text-name span {
+  font-size: 16px;
+  color: rgb(146, 146, 146);
+}

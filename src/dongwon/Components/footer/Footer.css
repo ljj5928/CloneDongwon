@@ -1,0 +1,175 @@
+footer {
+  padding-top: 120px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+footer .social-con {
+  padding-bottom: 50px;
+  position: relative;
+}
+
+.social-con h3 {
+  font-size: 30px;
+  margin-bottom: 40px;
+  font-weight: 500;
+  color: rgb(0, 101, 189);
+}
+.social-con div {
+  display: flex;
+  gap: 60px;
+}
+
+.social-con a {
+  font-size: 90px;
+  font-weight: 500;
+  color: rgb(29, 41, 61);
+}
+.social-con a:hover {
+  opacity: 0.7;
+}
+
+.social-con a svg {
+    transform: rotate(-45deg);
+
+}
+
+hr {
+  transform: translateX(-10px);
+  width: 100%;
+  border: none;
+  height: 1px;
+  background-color: rgb(219, 219, 219);
+}
+
+.fnb {
+  display: flex;
+  padding: 60px 144px 10vw 10px;
+  align-items: start;
+}
+
+.foot-link-con {
+  display: flex;
+  flex: 1;
+}
+
+.policy-nav {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  row-gap: 30px;
+  flex: 4;
+  font-size: 19px;
+  color: rgb(29, 41, 61);
+}
+.policy-nav li a{
+  position: relative;
+}
+
+.policy-nav li a:hover:after{
+    content: "";
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  height: 1px;
+  background-color: black;
+  width: 100%;
+}
+
+.company-nav {
+  flex: 5;
+  font-size: 19px;
+  color: rgb(29, 41, 61);
+}
+
+.company-nav ul {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  row-gap: 30px;
+  margin-bottom: 30px;
+}
+
+.company-nav ul li {
+  display: flex;
+  gap: 16px;
+}
+
+.company-nav ul li span {
+  color: rgb(80, 80, 80);
+}
+
+
+.site-nav {
+  display: flex;
+  align-items: start;
+  gap: 20px;
+}
+
+.site-nav div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.site-nav button {
+  padding: 17px;
+  font-size: 15px;
+  border-radius: 45px;
+  cursor: pointer;
+  min-width: 190px;
+  display: flex;
+  justify-content: center;
+  border: 1px solid rgb(29, 41, 61);
+  background-color: white;
+  transition: 0.7s ease;
+}
+.site-nav button:hover {
+  background-color: rgb(29, 41, 61);
+}
+
+.site-nav button a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 500;
+  color: rgb(29, 41, 61);
+}
+.site-nav button:hover a {
+  color: white;
+}
+
+.site-nav button.family {
+  min-width: 214px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgb(0, 101, 189);
+  color: white;
+}
+
+.site-nav button.family:hover {
+  color: rgb(0, 101, 189);
+  background-color: white;
+}
+
+.copyright {
+  padding: 30px 12px;
+  padding-left: 31vw;
+  font-size: 12px;
+}
+
+@media screen and (max-width: 1700px) {
+  .policy-nav {
+    flex: 1;
+    font-size: 17px;
+  }
+  .company-nav {
+    flex: 1;
+    font-size: 17px;
+  }
+  .site-nav button {
+    min-width: 171px;
+  }
+  .site-nav button.family {
+    min-width: 191px;
+  }
+}

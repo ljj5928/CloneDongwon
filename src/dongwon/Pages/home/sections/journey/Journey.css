@@ -1,0 +1,145 @@
+.journey {
+  width: 100%;
+  height: 100vh;
+  padding: 40px;
+  position: relative;
+  background-color: white;
+  transition: background-color 0.5s;
+}
+.journey .journey-i {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+.journey-i aside {
+  font-size: 16px;
+}
+.journey-i .journey-text {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  align-items: center;
+  padding-bottom: 40px;
+}
+
+.journey-i .journey-text h3 {
+  font-size: 30px;
+  font-weight: 400;
+  color: rgb(0, 101, 189);
+}
+.journey-i .journey-text p {
+  font-size: 3.5vw;
+  font-weight: 600;
+  text-align: center;
+  color: rgb(0, 24, 75);
+  padding-bottom: 20px;
+}
+.journey-text p span {
+  opacity: 0.5;
+}
+.journey-text button {
+  min-width: 170px;
+  padding: 20px 30px;
+  border-radius: 45px;
+  cursor: pointer;
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  background-color: rgb(0, 101, 189);
+  color: white;
+  border: 1px solid rgb(0, 101, 189);
+  transition: 0.5s ease;
+}
+.journey-text button:hover {
+  color: rgb(0, 101, 189);
+  background-color: white;
+}
+.journey-text button:hover svg{
+   animation: nudge 1s ease-in-out infinite;
+}
+@keyframes nudge {
+  0%   { transform: translateX(0); }
+  50%  { transform: translateX(10px); }
+  100% { transform: translateX(0); }
+}
+
+
+
+.journey .journey-video {
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  z-index: 5;
+  transition: 0.5s;
+}
+
+.journey-video p {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.journey-video .video-box {
+  position: relative;
+}
+
+.video-box video {
+  width: 220px;
+  border-radius: 10px;
+  transition: 0.5s;
+}
+
+.video-box .video-play-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
+
+  background: rgba(255, 255, 255, 0.3);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(1px);
+  z-index: 10;
+}
+.video-close-btn {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  padding: 15px 50px;
+  border-radius: 50px;
+
+  background-color: rgb(38, 38, 38);
+  color: white;
+  border: 1px solid white;
+
+  font-size: 20px;
+}
+
+/* journey active */
+
+.journey.active {
+  background-color: rgb(38, 38, 38);
+}
+
+.journey.active .journey-video {
+  right: 700px;
+  bottom: 120px;
+}
+
+.journey.active .journey-video p {
+  display: none;
+}
+
+.journey.active video {
+  width: 950px;
+  height: 550px;
+  object-fit: cover;
+}
