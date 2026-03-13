@@ -10,12 +10,12 @@ header {
 }
 
 header.hide {
-  
   transform: translateY(-100%);
 }
 
 header:hover {
   background-color: white;
+
 }
 
 /* nav */
