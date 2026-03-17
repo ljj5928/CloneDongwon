@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -13,14 +13,32 @@ import "./Answer.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const TEXT =
+  "동원은 새로운 가치를 창출하여 사회에 기여할 수 있도록 고민하고 실천합니다.<br/> 환경영향 저감을 위한 다양한 활동을 시행하고 있으며,<br/> 투명한 경영활동으로 지속가능한 발전을 위한 노력을 하고 있습니다.";
+
 const Answer = () => {
   const sectionRef = useRef(null);
+  const [lines, setLines] = useState([]);
 
-  const lines = useMemo(() => {
-    const text =
-      "동원은 새로운 가치를 창출하여 사회에 기여할 수 있도록 고민하고 실천합니다.<br/> 환경영향 저감을 위한 다양한 활동을 시행하고 있으며,<br/> 투명한 경영활동으로 지속가능한 발전을 위한 노력을 하고 있습니다.";
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
 
-    return text.split(/<br\s*\/?>/i).map((s) => s.trim());
+    const updateLines = (e) => {
+      const baseLines = TEXT.split(/<br\s*\/?>/i).map((s) => s.trim());
+
+      if (e.matches) {
+        setLines([baseLines.join(" ")]);
+      } else {
+        setLines(baseLines);
+      }
+    };
+
+    updateLines(mediaQuery);
+    mediaQuery.addEventListener("change", updateLines);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updateLines);
+    };
   }, []);
 
   useEffect(() => {
@@ -38,18 +56,13 @@ const Answer = () => {
       const planEl = q(".answer-plan")[0];
       const scrollBoxEl = q(".scroll-p-box")[0];
 
-      console.log("percentNumbers:", percentNumbers.length);
-
-      // ✅ 안전장치 (요소가 없으면 실행 중단)
       if (!planEl || !scrollBoxEl) return;
 
-      // 초기 상태
       gsap.set(titleImg, { opacity: 0, y: 60 });
       gsap.set(pBox, { opacity: 0, x: -60 });
       gsap.set(linkA, { opacity: 0, x: 60 });
       gsap.set(chars, { opacity: 0.4 });
 
-      // 인트로 (보이자마자면 start 값을 올리는 게 자연스러움)
       gsap
         .timeline({
           scrollTrigger: {
@@ -70,21 +83,19 @@ const Answer = () => {
           "-=0.6",
         );
 
-      // 글자 강조
       gsap.to(chars, {
         opacity: 1,
         stagger: 0.02,
         ease: "none",
         scrollTrigger: {
-          trigger: scrollBoxEl, // ✅ DOM 요소로
+          trigger: scrollBoxEl,
           start: "top 65%",
           end: "+=600",
           scrub: 0.6,
         },
       });
 
-      // 숫자 카운트업
-      percentNumbers.forEach((el,idx) => {
+      percentNumbers.forEach((el, idx) => {
         const target = Number(el.dataset.target || "0");
         const obj = { val: 0 };
 
@@ -108,7 +119,7 @@ const Answer = () => {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [lines]);
 
   return (
     <section className="answer" ref={sectionRef}>
@@ -120,6 +131,7 @@ const Answer = () => {
           <img src="./img/answer-title.png" alt="타이틀" />
         </div>
       </div>
+
       <div className="scroll-p-box">
         <p>
           {lines.map((line, lineIdx) => (
@@ -137,10 +149,12 @@ const Answer = () => {
             </span>
           ))}
         </p>
+
         <a href="#">
           <FontAwesomeIcon icon={faArrowRight} />
         </a>
       </div>
+
       <div className="answer-plan">
         <div className="plan-video">
           <video autoPlay muted loop>
@@ -148,6 +162,7 @@ const Answer = () => {
           </video>
           <div className="video-fade"></div>
         </div>
+
         <div className="plan-text-con">
           <div className="plan-text-box">
             <div className="text-percent">
@@ -159,6 +174,7 @@ const Answer = () => {
               <p>배당성향 확대 계획</p>
             </div>
           </div>
+
           <div className="plan-text-box">
             <div className="text-percent">
               <FontAwesomeIcon icon={faMinus} />

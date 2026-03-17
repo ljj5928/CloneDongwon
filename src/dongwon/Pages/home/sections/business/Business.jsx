@@ -67,11 +67,14 @@ const Business = () => {
 
           <div className="business-desc">
             <p>
-              동원은 본업을 파고들면서도 혁신의 가능성을 발견하면 새로운 <br />
-              분야에 도전하는 과감함을 잃지 않았습니다. 반드시 필요한 <br />
-              비즈니스의 고리를 찾아내고 이를 연결하며 만들어가는 필연적 <br />
+              동원은 본업을 파고들면서도 혁신의 가능성을 발견하면 새로운{" "}
+              <br className="pc-br" />
+              분야에 도전하는 과감함을 잃지 않았습니다. 반드시 필요한{" "}
+              <br className="pc-br" />
+              비즈니스의 고리를 찾아내고 이를 연결하며 만들어가는 필연적{" "}
+              <br className="pc-br" />
               혁신의 노력은 '체인 이노베이션'이라는 동원의 성장 DNA가 됐습니다.{" "}
-              <br />
+              <br className="pc-br" />
               지금 이 순간, 동원은 다음 어장을 위한 혁신의 고리를 찾아 항해
               중입니다.
             </p>
@@ -90,9 +93,16 @@ const Business = () => {
                 <h3 className="business-item-title">{item.title}</h3>
 
                 <div className="business-item-desc">
-                  {item.desc.map((line, i) => (
-                    <p key={i}>{line}</p>
-                  ))}
+                  <p>
+                    {item.desc.map((line, i) => (
+                      <React.Fragment key={i}>
+                        {line}
+                        {i !== item.desc.length - 1 && (
+                          <br className="business-desc-br" />
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </p>
                 </div>
               </div>
 

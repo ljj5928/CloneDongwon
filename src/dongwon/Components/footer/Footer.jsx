@@ -50,7 +50,7 @@ const Footer = () => {
             </button>
             <button type="button">
               <a href="#">
-                방문 예약 신청 <span>1</span>
+                방문 예약 신청 <span><FontAwesomeIcon icon={faArrowRight} /></span>
               </a>
             </button>
           </div>

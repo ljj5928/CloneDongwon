@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { faArrowRightLong } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./Media.css";
 
 const Media = () => {
@@ -15,21 +17,21 @@ const Media = () => {
       type: "콘텐츠",
       date: "2026.03.04",
       title: "예민한 성격과 비판적 사고? 기획에 도움 많이 될 거야 | JOB학사전 EP.13",
-      image: "./img/media2.jpg",
+      image: "./img/media2.webp",
     },
     {
       id: 3,
       type: "뉴스",
       date: "2026.03.13",
       title: "동원F&B 장수 브랜드 ‘쿨피스’, 15년 만에 바나나맛 신제품 출시",
-      image: "./img/news1.jpg",
+      image: "./img/news1.jfif",
     },
     {
       id: 4,
       type: "뉴스",
       date: "2026.03.11",
       title: "국내 최초 코팅막 출시한 동원시스템즈, '인터배터리 2026'서 공개",
-      image: "./img/news2.jpg",
+      image: "./img/news2.webp",
     },
   ];
 
@@ -63,7 +65,7 @@ const Media = () => {
               </button>
             </div>
 
-            <button className="media-more">더보기</button>
+            <button className="media-more">더 보기<FontAwesomeIcon icon={faArrowRightLong} /></button>
           </div>
         </div>
 
@@ -76,6 +78,9 @@ const Media = () => {
                   alt={item.title}
                   className="media-image"
                 />
+                <div className="media-image-overlay">
+                  <FontAwesomeIcon icon={faArrowRightLong} />
+                </div>
               </div>
 
               <div className="media-meta">

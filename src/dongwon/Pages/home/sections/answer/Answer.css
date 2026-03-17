@@ -14,7 +14,8 @@
   height: 100%;
   padding: 10px 0px;
 
-  height: 420px;
+  height: 30vw;
+  max-height: 420px;
   overflow: hidden;
 
   object-fit: cover;
@@ -98,11 +99,12 @@
     );
 }
 .answer-plan .plan-text-con {
+  width: 100%;
   color: white;
   flex: 1;
 }
 
-.plan-text-con .plan-text-box{
+.plan-text-con .plan-text-box {
   display: flex;
   justify-content: space-between;
   align-items: start;
@@ -121,10 +123,10 @@
   display: block;
 }
 
-.plan-text-box span{
+.plan-text-box span {
   font-size: 4vw;
 }
-.plan-text-box .text-name{
+.plan-text-box .text-name {
   display: flex;
   flex-direction: column;
   align-items: end;
@@ -137,4 +139,59 @@
 .plan-text-box .text-name span {
   font-size: 16px;
   color: rgb(146, 146, 146);
+}
+
+@media screen and (max-width: 1200px) {
+  .answer {
+    padding-top: 30px;
+  }
+}
+@media screen and (max-width: 768px) {
+  .scroll-p-box{
+    gap: 40px;
+    align-items: flex-start;
+    padding: 20px;
+  }
+  .scroll-p-box p{
+    font-size: 3.5vw;
+    word-break: keep-all;
+  }
+  .scroll-p-box svg{
+    font-size: 9vw;
+  }
+
+  .answer-plan {
+    flex-direction: column-reverse;
+    padding-top: 0;
+  }
+  .answer-plan .plan-text-con {
+    display: flex;
+  }
+  .plan-text-con .plan-text-box {
+    flex-direction: column-reverse;
+    width: 100%;
+    padding: 10px 10px 50px 10px;
+    gap: 50px;
+  }
+  .plan-text-box .text-percent{
+    align-self: flex-start;
+  }
+  .plan-text-box .text-name{
+    align-items: flex-start;
+  }
+  .plan-text-box .text-name p{
+    font-size: 14px;
+  }
+  .plan-text-box .text-name span{
+    font-size: 13px;
+  }
+  .plan-text-box .text-percent{
+    font-size: 14vw;
+  }
+  .plan-text-box span{
+    font-size: 3vw;
+  }
+  .answer-plan .plan-video{
+    width: 100%;
+  }
 }

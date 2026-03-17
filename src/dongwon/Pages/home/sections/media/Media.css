@@ -1,0 +1,286 @@
+/* media layout */
+
+.media {
+  padding: 180px 0 240px;
+
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.media-head {
+  padding: 0 30px;
+}
+
+.media-title {
+  margin-bottom: 50px;
+
+  font-size: 6.51vw;
+  font-weight: 600;
+}
+
+.media-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 80px;
+}
+
+.media-tabs {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.media-tabs button {
+  border: none;
+
+  background: #fff;
+
+  font-size: 1.82vw;
+
+  cursor: pointer;
+  opacity: 0.3;
+}
+
+.media-tabs button.active,
+.media-tabs button:hover {
+  opacity: 1;
+}
+
+.media-more {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  min-width: 190px;
+  align-self: flex-end;
+
+  padding: 20px 25px 20px 30px;
+
+  border: 1px solid rgb(0, 101, 189);
+  border-radius: 45px;
+
+  background: rgb(0, 101, 189);
+
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.5s ease;
+}
+
+.media-more svg {
+  font-size: 15px;
+}
+
+.media-more:hover {
+  background: #fff;
+
+  color: rgb(0, 101, 189);
+}
+
+.media-more:hover svg {
+  animation: nudge 1s ease-in-out infinite;
+}
+
+@keyframes nudge {
+  0% {
+    transform: translateX(-5px);
+  }
+
+  50% {
+    transform: translateX(5px);
+  }
+
+  100% {
+    transform: translateX(-5px);
+  }
+}
+
+/* media list */
+
+.media-container {
+  display: grid;
+  grid-template-columns: repeat(2, calc(50% - 10px));
+  align-items: center;
+  gap: 20px;
+
+  padding: 0 12px;
+}
+
+.media-box {
+  cursor: pointer;
+}
+
+.media-image-wrap {
+  position: relative;
+
+  width: 100%;
+
+  margin-bottom: 35px;
+}
+
+.media-image {
+  display: block;
+
+  width: 100%;
+  height: 27.2vw;
+
+  border-radius: 10px;
+
+  object-fit: cover;
+}
+
+.media-image-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 180px;
+  height: 180px;
+
+  border: 2px solid rgb(175, 175, 175);
+  border-radius: 50%;
+
+  background: rgba(0, 0, 0, 0.45);
+
+  color: #fff;
+  font-size: 40px;
+
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.7s ease;
+}
+
+.media-box:hover .media-image-overlay {
+  opacity: 1;
+}
+
+/* media text */
+
+.media-meta {
+  display: flex;
+  justify-content: space-between;
+
+  margin-bottom: 30px;
+  padding: 0 20px;
+
+  font-size: 18px;
+}
+
+.media-type {
+  color: rgb(0, 101, 189);
+  font-weight: 600;
+}
+
+.media-date {
+  opacity: 0.4;
+}
+
+.media-box-title {
+  width: 100%;
+  padding: 0 20px;
+
+  font-size: 28px;
+  font-weight: 300;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.media-box:hover .media-box-title {
+  text-decoration: underline;
+}
+
+@media screen and (max-width: 1024px) {
+  .media {
+    padding: 75px 0 150px;
+  }
+  .media-head {
+    padding: 0px 40px 0px 30px;
+  }
+  .media-title {
+    font-size: 60px;
+    margin-bottom: 30px;
+  }
+  .media-tabs {
+    align-self: self-end;
+    gap: 37px;
+  }
+  .media-actions {
+    margin-bottom: 80px;
+  }
+  .media-image {
+    height: 26.5vw;
+  }
+  .media-image-wrap {
+    margin-bottom: 29px;
+  }
+  .media-meta {
+    padding: 0 6px;
+    font-size: 14px;
+    margin-bottom: 23px;
+  }
+  .media-box-title {
+    padding: 0 6px;
+    font-size: 22px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .media {
+    padding: 27px 0;
+  }
+  .media-head {
+    padding: 0px 12px;
+  }
+  .media-title {
+    font-size: 50px;
+  }
+  .media-actions {
+    margin-bottom: 60px;
+  }
+
+  .media-tabs {
+    gap: 30px;
+    align-self: center;
+    padding: 5px 0;
+  }
+  .media-tabs button {
+    font-size: 5vw;
+  }
+  .media-more {
+    min-width: 136px;
+    padding: 16px 22px;
+    align-self: flex-end;
+    font-size: 11px;
+  }
+  .media-container {
+    grid-template-columns: 1fr;
+    gap: 60px;
+  }
+  .media-image-wrap {
+    margin-bottom: 28px;
+  }
+
+  .media-image {
+    height: 53vw;
+  }
+  .media-meta {
+    padding: 0;
+    font-size: 12px;
+    margin-bottom: 23px;
+  }
+  .media-box-title {
+    padding: 0;
+    font-size: 18px;
+  }
+}

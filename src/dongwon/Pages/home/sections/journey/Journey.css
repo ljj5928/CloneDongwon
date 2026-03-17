@@ -9,7 +9,7 @@
 .journey .journey-i {
   display: flex;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   justify-content: space-between;
   align-items: center;
 }
@@ -56,16 +56,20 @@
   color: rgb(0, 101, 189);
   background-color: white;
 }
-.journey-text button:hover svg{
-   animation: nudge 1s ease-in-out infinite;
+.journey-text button:hover svg {
+  animation: nudge 1s ease-in-out infinite;
 }
 @keyframes nudge {
-  0%   { transform: translateX(0); }
-  50%  { transform: translateX(10px); }
-  100% { transform: translateX(0); }
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(10px);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
-
-
 
 .journey .journey-video {
   position: absolute;
@@ -83,6 +87,7 @@
 
 .journey-video .video-box {
   position: relative;
+  cursor: pointer;
 }
 
 .video-box video {
@@ -106,6 +111,7 @@
   border: 1px solid rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(1px);
   z-index: 10;
+  cursor: pointer;
 }
 .video-close-btn {
   position: absolute;
@@ -130,8 +136,15 @@
 }
 
 .journey.active .journey-video {
-  right: 700px;
+  width: 100%;
+  max-width: 1280px;
+  height: 75%;
+  right: 50%;
+  transform: translateX(46.5%);
   bottom: 120px;
+}
+.journey-video .video-box {
+  height: 100%;
 }
 
 .journey.active .journey-video p {
@@ -139,7 +152,98 @@
 }
 
 .journey.active video {
-  width: 950px;
-  height: 550px;
+  width: 100%;
+  height: 100%;
+
   object-fit: cover;
+}
+
+@media screen and (max-width: 1200px) {
+  .journey.active .journey-video {
+    width: calc(100% - 60px);
+    transform: translate(50%,50%);
+    height: 50vw;
+    bottom: 50%
+  }
+  .video-close-btn {
+    bottom: calc(230px - 12vw);
+    transform: translate(-50%,50%);
+    padding: 13px 50px;
+  }
+}
+@media screen and (max-width: 768px) {
+  .journey {
+    height: fit-content;
+    padding: 0px;
+  }
+  .journey .journey-i {
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    height: 100vh;
+    padding: 30px;
+    margin-bottom: 50px;
+  }
+  .journey-i aside {
+    position: absolute;
+    bottom: 15px;
+    font-size: 16px;
+  }
+  .journey-i aside:first-of-type {
+    left: 10px;
+    letter-spacing: 2px;
+  }
+  .journey-i aside:last-of-type {
+    right: 10px;
+  }
+
+  .journey-i .journey-text {
+    gap: 15px;
+    padding-bottom: 0;
+  }
+
+  .journey-i .journey-text h3 {
+    font-size: 15px;
+  }
+  .pc-br {
+    display: none;
+  }
+  .journey-i .journey-text p {
+    font-size: 34px;
+    word-break: keep-all;
+  }
+  .journey-text button {
+    min-width: 0;
+    padding: 15px;
+    gap: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 10px;
+  }
+  .journey .journey-video {
+    position: relative;
+    padding: 10px;
+    right: 0;
+  }
+  .video-box video {
+    width: 100%;
+  }
+  .video-box .video-play-btn {
+    width: 70px;
+    height: 70px;
+  }
+  .journey.active {
+    background-color: white;
+  }
+  .journey.active .journey-video {
+    right: 0;
+    transform: translateX(0);
+    bottom: 30px;
+  }
+  .journey.active .journey-video p {
+    display: block;
+  }
+  .video-close-btn {
+    display: none;
+  }
 }
