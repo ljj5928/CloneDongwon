@@ -48,7 +48,7 @@ const Hero = () => {
     ? "11vw"
     : "10vw";
   const pillY = isMobile
-    ? "26.5%"
+    ? "31.5vw"
     : isTablet
     ? "20.5%"
     : "25%";

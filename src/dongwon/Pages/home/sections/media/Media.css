@@ -111,7 +111,9 @@
 }
 
 .media-box {
+  width: 100%;
   cursor: pointer;
+  min-width: 0;
 }
 
 .media-image-wrap {
@@ -143,8 +145,8 @@
   justify-content: center;
   align-items: center;
 
-  width: 180px;
-  height: 180px;
+  width: 25%;
+  aspect-ratio: 1;
 
   border: 2px solid rgb(175, 175, 175);
   border-radius: 50%;

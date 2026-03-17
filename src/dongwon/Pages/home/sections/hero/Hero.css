@@ -194,12 +194,12 @@
 
 @media screen and (max-width: 768px) {
   .hero-title {
-    top: 26%;
+    top: 31.5vw;
     font-size: 13.5vw;
     margin-bottom: 100px;
   }
   .hero .hero-text {
-    top: 42%;
+    top: 51.9vw;
   }
   .hero .hero-text p {
     font-size: 3vw;
@@ -216,7 +216,7 @@
     font-size: 18px;
   }
     .hero-overlay::before{
-    top: 26%;
+    top: 31.5vw;
     width: 90vw;
     height: 16vw;
   }

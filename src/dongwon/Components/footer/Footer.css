@@ -260,6 +260,7 @@ hr {
     gap: 5px;
   }
   .site-nav button {
+    min-width: 0;
     width: 100%;
     font-size: 13px;
     font-weight: 700;
