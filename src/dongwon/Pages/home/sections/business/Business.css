@@ -346,6 +346,21 @@
   .business-item {
     grid-template-columns: 35% 65%;
   }
+    .business-item:nth-child(1) {
+    top: 60px;
+  }
+
+  .business-item:nth-child(2) {
+    top: 160px;
+  }
+
+  .business-item:nth-child(3) {
+    top: 260px;
+  }
+
+  .business-item:nth-child(4) {
+    top: 360px;
+  }
 
   .business-item-title {
     font-size: 4vw;
