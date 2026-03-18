@@ -1,6 +1,7 @@
 .answer {
   padding-top: 100px;
   background-color: #11141a;
+  overflow: hidden;
 }
 
 /*answer-video-box  */

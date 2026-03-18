@@ -22,7 +22,7 @@ export const navMenu = [
     label: "사업분야",
     children: [
       {
-        id: "philosophy",
+        id: "Ocean",
         label: "해양•물류",
         children: [
           {

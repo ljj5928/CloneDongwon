@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 import { navMenu } from "./navMenu";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSistrix } from "@fortawesome/free-brands-svg-icons";
-import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
+import { faAngleDown, faX ,faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons";
 import "./Header.css";
 
 const Header = () => {
-  const [openLang, setOpenLang] = useState(false);
-  const [openMenuId, setOpenMenuId] = useState(null);
-  const [lang, setLang] = useState("KR");
-  const [isHeaderHide, setIsHeaderHide] = useState(false);
-  const [isWhiteHeader, setIsWhiteHeader] = useState(false);
+  const [isLangOpen, setIsLangOpen] = useState(false);
+  const [openSubmenuId, setOpenSubmenuId] = useState(null);
+  const [openMobileMenuIds, setOpenMobileMenuIds] = useState([]);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSearchMenuOpen, setIsSearchMenuOpen] = useState(false);
+  const [selectedLang, setSelectedLang] = useState("KR");
+  const [isHeaderHidden, setIsHeaderHidden] = useState(false);
+  const [isLightModeHeader, setIsLightModeHeader] = useState(false);
   const [isIntroHidden, setIsIntroHidden] = useState(true);
 
   const prevScrollY = useRef(0);
@@ -26,11 +28,16 @@ const Header = () => {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
+      const isTablet = window.innerWidth <= 1024;
 
-      if (currentScrollY > prevScrollY.current && currentScrollY > 80) {
-        setIsHeaderHide(true);
+      if (isTablet) {
+        setIsHeaderHidden(false);
       } else {
-        setIsHeaderHide(false);
+        if (currentScrollY > prevScrollY.current && currentScrollY > 80) {
+          setIsHeaderHidden(true);
+        } else {
+          setIsHeaderHidden(false);
+        }
       }
 
       prevScrollY.current = currentScrollY;
@@ -48,7 +55,7 @@ const Header = () => {
         }
       });
 
-      setIsWhiteHeader(isOnLightSection);
+      setIsLightModeHeader(isOnLightSection);
     };
 
     handleScroll();
@@ -62,16 +69,35 @@ const Header = () => {
     };
   }, []);
 
-  const toggleMenu = (id) => {
-    setOpenMenuId((prev) => (prev === id ? null : id));
+  const toggleSubmenu = (id) => {
+    setOpenSubmenuId((prev) => (prev === id ? null : id));
+  };
+
+  const toggleMobileMenuGroup = (id) => {
+    setOpenMobileMenuIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  const openSearchMenu = () => {
+    setIsSearchMenuOpen(true);
+    setIsMobileMenuOpen(false);
+    setOpenSubmenuId(null);
+    setIsLangOpen(false);
+  };
+
+  const closeSearchMenu = () => {
+    setIsSearchMenuOpen(false);
   };
 
   return (
     <header
       className={`
         ${isIntroHidden ? "intro-hidden" : ""}
-        ${isHeaderHide ? "hide" : ""}
-        ${isWhiteHeader ? "white-mode" : ""}
+        ${isHeaderHidden ? "hide" : ""}
+        ${isLightModeHeader ? "white-mode" : ""}
+        ${isMobileMenuOpen ? "open" : ""}
+        ${isSearchMenuOpen ? "search-open" : ""}
       `}
     >
       <nav>
@@ -92,11 +118,11 @@ const Header = () => {
 
         <div className="nav-btn">
           <div
-            className={`lang-btn ${openLang ? "active" : ""}`}
-            onClick={() => setOpenLang(!openLang)}
-            onMouseLeave={() => setOpenLang(false)}
+            className={`lang-btn ${isLangOpen ? "active" : ""}`}
+            onClick={() => setIsLangOpen(!isLangOpen)}
+            onMouseLeave={() => setIsLangOpen(false)}
           >
-            <button>{lang}</button>
+            <button>{selectedLang}</button>
             <p>
               <FontAwesomeIcon icon={faAngleDown} />
             </p>
@@ -104,14 +130,14 @@ const Header = () => {
             <div>
               <div className="lang-select-box">
                 <p
-                  onClick={() => setLang("KR")}
-                  className={lang === "KR" ? "active" : ""}
+                  onClick={() => setSelectedLang("KR")}
+                  className={selectedLang === "KR" ? "active" : ""}
                 >
                   KR
                 </p>
                 <p
-                  onClick={() => setLang("EN")}
-                  className={lang === "EN" ? "active" : ""}
+                  onClick={() => setSelectedLang("EN")}
+                  className={selectedLang === "EN" ? "active" : ""}
                 >
                   EN
                 </p>
@@ -119,11 +145,29 @@ const Header = () => {
             </div>
           </div>
 
-          <button type="button" className="search-btn">
-            <FontAwesomeIcon icon={faSistrix} />
-          </button>
+          {!isSearchMenuOpen ? (
+            <button
+              type="button"
+              className="search-btn"
+              onClick={openSearchMenu}
+            >
+              <FontAwesomeIcon icon={faMagnifyingGlass} />
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="search-btn"
+              onClick={closeSearchMenu}
+            >
+              <FontAwesomeIcon icon={faX} />
+            </button>
+          )}
 
-          <button type="button" className="ham-btn">
+          <button
+            type="button"
+            className="ham-btn"
+            onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+          >
             <span></span>
             <span></span>
           </button>
@@ -137,7 +181,7 @@ const Header = () => {
               {menu.children.map((child) => (
                 <li
                   key={child.id}
-                  className={`submenu-group ${openMenuId === child.id ? "open" : ""}`}
+                  className={`submenu-group ${openSubmenuId === child.id ? "open" : ""}`}
                 >
                   <div className="submenu-title">
                     {child.children?.length > 0 ? (
@@ -145,12 +189,12 @@ const Header = () => {
                         <a href="#">{child.label}</a>
                         <FontAwesomeIcon
                           icon={faAngleDown}
-                          className={openMenuId === child.id ? "open" : ""}
-                          onClick={() => toggleMenu(child.id)}
+                          className={openSubmenuId === child.id ? "open" : ""}
+                          onClick={() => toggleSubmenu(child.id)}
                         />
                       </>
                     ) : (
-                      <a href="">{child.label}</a>
+                      <a href="#">{child.label}</a>
                     )}
                   </div>
 
@@ -158,7 +202,7 @@ const Header = () => {
                     <ul className="submenu-items">
                       {child.children.map((gchild) => (
                         <li key={gchild.id} className="submenu-item">
-                          <a href="">{gchild.label}</a>
+                          <a href="#">{gchild.label}</a>
                         </li>
                       ))}
                     </ul>
@@ -169,6 +213,127 @@ const Header = () => {
           ))}
 
           <div className="submenu-bottom-bar">
+            <video
+              src="./video/header-bottom.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+            ></video>
+          </div>
+        </div>
+      </div>
+
+      <div className={`search-menu ${isSearchMenuOpen ? "open" : ""}`}>
+        <div className="search-menu-inner">
+          <form className="search-form">
+            <input
+              type="text"
+              placeholder="검색어를 입력해 주세요."
+              className="search-input"
+            />
+            <button type="submit" className="search-submit-btn">
+              <FontAwesomeIcon icon={faMagnifyingGlass} />
+            </button>
+          </form>
+
+          <div className="search-tags">
+            <button type="button"># 동원</button>
+            <button type="button"># ESG 경영</button>
+            <button type="button"># 채용</button>
+            <button type="button"># 사업분야</button>
+          </div>
+        </div>
+      </div>
+
+      <div className={`mobile-menu ${isMobileMenuOpen ? "open" : ""}`}>
+        <div className="mobile-menu-inner">
+          <ul className="mobile-menu-list">
+            {navMenu.map((menu) => (
+              <li
+                key={menu.id}
+                className={`mobile-menu-group ${openMobileMenuIds.includes(menu.id) ? "open" : ""}`}
+              >
+                <button
+                  type="button"
+                  className="mobile-menu-title"
+                  onClick={() => toggleMobileMenuGroup(menu.id)}
+                >
+                  <span>{menu.label}</span>
+                  <FontAwesomeIcon
+                    icon={faAngleDown}
+                    className={openMobileMenuIds.includes(menu.id) ? "open" : ""}
+                  />
+                </button>
+
+                <div className="mobile-menu-items">
+                  <div className="mobile-menu-items-inner">
+                    {menu.children?.map((child) => (
+                      <ul
+                        key={child.id}
+                        className={`mobile-menu-item ${openSubmenuId === child.id ? "open" : ""}`}
+                        onClick={() => toggleSubmenu(child.id)}
+                      >
+                        {child.children?.length > 0 ? (
+                          <li className="mobile-menu-item-head">
+                            <a href="#">{child.label}</a>
+                            <FontAwesomeIcon
+                              icon={faAngleDown}
+                              className={openSubmenuId === child.id ? "open" : ""}
+                            />
+                          </li>
+                        ) : (
+                          <a href="#">{child.label}</a>
+                        )}
+
+                        {child.children?.length > 0 && (
+                          <ul className="mobile-submenu-items">
+                            {child.children.map((gchild) => (
+                              <li
+                                key={gchild.id}
+                                className="mobile-submenu-item"
+                              >
+                                <a href="#">{gchild.label}</a>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </ul>
+                    ))}
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+
+          <div
+            className={`lang-btn ${isLangOpen ? "active" : ""}`}
+            onClick={() => setIsLangOpen(!isLangOpen)}
+          >
+            <button>{selectedLang}</button>
+            <p>
+              <FontAwesomeIcon icon={faAngleDown} />
+            </p>
+
+            <div>
+              <div className="lang-select-box">
+                <p
+                  onClick={() => setSelectedLang("KR")}
+                  className={selectedLang === "KR" ? "active" : ""}
+                >
+                  KR
+                </p>
+                <p
+                  onClick={() => setSelectedLang("EN")}
+                  className={selectedLang === "EN" ? "active" : ""}
+                >
+                  EN
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mobile-menu-bottom-bar">
             <video
               src="./video/header-bottom.mp4"
               autoPlay
