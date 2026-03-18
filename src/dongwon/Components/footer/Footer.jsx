@@ -19,8 +19,11 @@ const Footer = () => {
           <a href="#">Instagram <FontAwesomeIcon icon={faArrowRight} /></a>
         </div>
       </div>
+
       <hr />
+
       <div className="fnb">
+
         <div className="foot-link-con">
           <ul className="policy-nav">
             {policyNav.map((item) => (
@@ -29,6 +32,7 @@ const Footer = () => {
               </li>
             ))}
           </ul>
+
           <div className="company-nav">
             <ul>
               {companyNav.map((item) => (
@@ -43,6 +47,7 @@ const Footer = () => {
             </a>
           </div>
         </div>
+
         <div className="site-nav">
           <div>
             <button type="button">
@@ -60,6 +65,7 @@ const Footer = () => {
         </div>
       </div>
       <hr />
+
       <div className="copyright">
         <p>
           ©2025
@@ -67,6 +73,7 @@ const Footer = () => {
           Dongwon Group All rights reserved.
         </p>
       </div>
+
     </footer>
   );
 };

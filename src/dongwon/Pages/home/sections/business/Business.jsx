@@ -57,9 +57,9 @@ const Business = () => {
   return (
     <section className="business">
       <div className="business-inner">
+
         <div className="business-head">
           <h2 className="business-title">사업 분야</h2>
-
           <h3 className="business-sub">
             체인 이노베이션 :
             <span className="business-sub-blue"> 연쇄적 혁신</span>
@@ -89,9 +89,10 @@ const Business = () => {
         <div className="business-container">
           {businesses.map((item) => (
             <div className="business-item" key={item.id}>
+
               <div className="business-text">
                 <h3 className="business-item-title">{item.title}</h3>
-
+      
                 <div className="business-item-desc">
                   <p>
                     {item.desc.map((line, i) => (

@@ -42,6 +42,7 @@ const Journey = ({ setJourneyActive }) => {
     <section className={`journey ${playing ? "active" : ""}`}>
       <div className="journey-i">
         <aside>• 동 원</aside>
+
         <div className="journey-text">
           <h3>동원,세상을 향한 여정</h3>
           <p>
@@ -52,12 +53,15 @@ const Journey = ({ setJourneyActive }) => {
             경영철학 보기 <FontAwesomeIcon icon={faArrowRightLong} />
           </button>
         </div>
+
         <aside>필요를 찾다</aside>
       </div>
+
       <div className={`journey-video ${playing ? "active" : ""}`}>
         <p>
           <FontAwesomeIcon icon={faCaretRight} /> 필요에 답하다 CF
         </p>
+
         <div className="video-box" onClick={startVideoPlay}>
           <video ref={videoRef}>
             <source src="./video/journey-cf.mp4" type="video/mp4" />
@@ -68,6 +72,7 @@ const Journey = ({ setJourneyActive }) => {
             </button>
           )}
         </div>
+        
       </div>
       {playing && (
         <button className="video-close-btn" onClick={closeVideoPlay}>

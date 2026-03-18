@@ -1,3 +1,5 @@
+/* header */
+
 header {
   position: fixed;
   top: 0;
@@ -6,6 +8,7 @@ header {
 
   width: 100%;
   max-height: 700px;
+
   overflow: hidden;
 
   background-color: transparent;
@@ -21,15 +24,31 @@ header.hide {
 
 header.intro-hidden {
   opacity: 0;
-  transform: translateY(-100%);
   pointer-events: none;
+  transform: translateY(-100%);
 }
 
 header.white-mode {
   background-color: white;
 }
 
+header.open,
+header.search-open {
+  background-color: white;
+}
+
+header.open nav *,
+header.search-open nav * {
+  color: black;
+}
+
+header.open nav::after,
+header.search-open nav::after {
+  background-color: rgb(212, 212, 212);
+}
+
 /* nav */
+
 nav {
   position: relative;
 
@@ -50,7 +69,24 @@ header.white-mode nav * {
   color: black;
 }
 
-/* nav logo */
+nav::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+
+  width: 100%;
+  height: 1px;
+
+  background-color: transparent;
+}
+
+header.white-mode nav::after {
+  background-color: rgb(212, 212, 212);
+}
+
+/* logo */
+
 nav .logo {
   width: fit-content;
   height: 60px;
@@ -60,7 +96,8 @@ nav .logo img {
   width: 90px;
 }
 
-/* nav gnb */
+/* gnb */
+
 .gnb {
   flex: 1;
 
@@ -96,6 +133,7 @@ nav .logo img {
   height: 2px;
 
   opacity: 0;
+
   background-color: rgb(0, 101, 189);
 
   transition: 0.5s ease;
@@ -107,12 +145,15 @@ nav .logo img {
 }
 
 /* nav btn */
+
 .nav-btn {
   display: flex;
   gap: 30px;
 
   cursor: pointer;
 }
+
+/* lang btn */
 
 .lang-btn {
   position: relative;
@@ -124,6 +165,7 @@ nav .logo img {
 
 .lang-btn button {
   border: none;
+
   background-color: transparent;
 
   font-size: 16px;
@@ -145,8 +187,9 @@ nav .logo img {
 
   z-index: 10;
 
-  overflow: hidden;
   max-height: 0;
+
+  overflow: hidden;
 
   transform: translateX(-30%);
 
@@ -154,16 +197,18 @@ nav .logo img {
 }
 
 .lang-btn.active > div {
-  max-height: 100px;
   z-index: 200;
+
+  max-height: 100px;
 }
 
 .lang-btn .lang-select-box {
   box-sizing: border-box;
 
+  padding: 1px;
+
   border: 1px solid rgb(219, 219, 219);
   border-radius: 4px;
-  padding: 1px;
 }
 
 .lang-select-box p {
@@ -176,17 +221,31 @@ nav .logo img {
 
 .lang-select-box p.active {
   background-color: rgb(235, 235, 235);
+
   color: rgb(0, 101, 189);
 }
 
-.search-btn {
+/* search btn */
+
+.search-btn,
+.search-submit-btn,
+.search-close-btn {
   border: none;
+
   background-color: transparent;
 
   cursor: pointer;
+}
 
+.search-btn {
   font-size: 20px;
 }
+
+.search-close-btn {
+  font-size: 30px;
+}
+
+/* ham btn */
 
 .ham-btn {
   display: none;
@@ -199,6 +258,7 @@ nav .logo img {
   padding: 0;
 
   border: none;
+
   background-color: transparent;
 
   cursor: pointer;
@@ -211,40 +271,27 @@ nav .logo img {
   background-color: currentColor;
 }
 
-nav::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-
-  width: 100%;
-  height: 1px;
-
-  background-color: transparent;
-}
-
-header.white-mode nav::after {
-  background-color: rgb(212, 212, 212);
-}
-
 /* submenu */
+
 .submenu {
   position: relative;
 
   height: 0;
+  padding-left: 100px;
+
   overflow: hidden;
   opacity: 0;
-
-  padding-left: 100px;
 
   transition: 0.6s ease;
 }
 
 header:hover .submenu {
   height: 500px;
-  opacity: 1;
   padding-top: 50px;
+
+  opacity: 1;
 }
+
 header.search-open:hover .submenu {
   display: none;
 }
@@ -274,6 +321,7 @@ header.search-open:hover .submenu {
   justify-content: space-between;
 
   cursor: pointer;
+
   font-weight: 600;
 }
 
@@ -292,6 +340,7 @@ header.search-open:hover .submenu {
   height: 2px;
 
   opacity: 0;
+
   background-color: black;
 
   transition: 0.6s ease;
@@ -321,9 +370,10 @@ header.search-open:hover .submenu {
   flex-direction: column;
   gap: 10px;
 
-  overflow: hidden;
   max-height: 0;
   margin-top: 10px;
+
+  overflow: hidden;
 
   transition: 1.5s ease;
 }
@@ -354,6 +404,7 @@ header.search-open:hover .submenu {
   height: 2px;
 
   opacity: 0;
+
   background-color: black;
 
   transition: 0.6s ease;
@@ -373,6 +424,7 @@ header.search-open:hover .submenu {
   height: 60px;
 
   overflow: hidden;
+
   border-radius: 10px;
 }
 
@@ -385,13 +437,15 @@ header.search-open:hover .submenu {
 }
 
 /* search menu */
+
 .search-menu {
   height: 0;
-  overflow: hidden;
 
-  background-color: white;
+  overflow: hidden;
   opacity: 0;
   visibility: hidden;
+
+  background-color: white;
 
   transition:
     height 0.4s ease,
@@ -401,6 +455,7 @@ header.search-open:hover .submenu {
 
 .search-menu.open {
   height: 330px;
+
   opacity: 1;
   visibility: visible;
 }
@@ -424,33 +479,24 @@ header.search-open:hover .submenu {
 .search-input {
   flex: 1;
 
+  padding-bottom: 20px;
+
   border: none;
+
   background-color: transparent;
+
   outline: none;
 
+  color: #000000;
   font-size: 38px;
   font-weight: 400;
-  color: #000000;
-
-  padding-bottom: 20px;
 }
 
 .search-input::placeholder {
   color: #a1a1a1;
 }
+
 .search-form svg {
-  font-size: 30px;
-}
-
-.search-submit-btn,
-.search-close-btn,
-.search-btn {
-  border: none;
-  background-color: transparent;
-  cursor: pointer;
-}
-
-.search-close-btn {
   font-size: 30px;
 }
 
@@ -468,30 +514,17 @@ header.search-open:hover .submenu {
 
   border: 1px solid #94bae9;
   border-radius: 999px;
+
   background-color: transparent;
 
+  color: #2d7fe5;
   font-size: 12px;
   font-weight: 600;
-  color: #2d7fe5;
 
   cursor: pointer;
 }
 
 /* mobile menu */
-header.open,
-header.search-open {
-  background-color: white;
-}
-
-header.open nav *,
-header.search-open nav * {
-  color: black;
-}
-
-header.open nav::after,
-header.search-open nav::after {
-  background-color: rgb(212, 212, 212);
-}
 
 .mobile-menu {
   position: fixed;
@@ -504,24 +537,27 @@ header.search-open nav::after {
 
   width: 100%;
   max-height: 0;
-  overflow: hidden;
 
-  background-color: rgb(255, 255, 255);
+  overflow: hidden;
   opacity: 0;
 
   pointer-events: none;
+
+  background-color: rgb(255, 255, 255);
 
   transition: max-height 1s ease;
 }
 
 .mobile-menu.open {
-  opacity: 1;
   max-height: 1500px;
+
+  opacity: 1;
   pointer-events: auto;
 }
 
 .mobile-menu-inner {
   position: relative;
+
   width: 100%;
   height: 100%;
   min-height: calc(100vh - 60px);
@@ -531,18 +567,25 @@ header.search-open nav::after {
 
 .mobile-menu-list {
   height: fit-content;
+
   overflow-y: auto;
+}
+
+.mobile-menu-group:first-of-type {
+  border-top: 1px solid rgb(212, 212, 212);
 }
 
 .mobile-menu-title {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 
   width: 100%;
   padding: 25px 12px;
 
   border: none;
+  border-bottom: 1px solid rgba(212, 212, 212, 0.103);
+
   background-color: transparent;
 
   font-size: 19px;
@@ -550,12 +593,9 @@ header.search-open nav::after {
   text-align: left;
 
   cursor: pointer;
-  border-bottom: 1px solid rgba(212, 212, 212, 0.103);
+
   transition: 1s ease;
 }
-.mobile-menu-group:first-of-type{
-  border-top: 1px solid rgb(212, 212, 212);
-} 
 
 .mobile-menu-group.open .mobile-menu-title {
   border-bottom: 1px solid rgb(212, 212, 212);
@@ -572,10 +612,11 @@ header.search-open nav::after {
 .mobile-menu-items {
   max-height: 0;
 
-  transition: max-height 0.8s ease;
-
   overflow: hidden;
+
   border-bottom: 1px solid rgb(212, 212, 212);
+
+  transition: max-height 0.8s ease;
 }
 
 .mobile-menu-group.open .mobile-menu-items {
@@ -583,24 +624,32 @@ header.search-open nav::after {
 }
 
 .mobile-menu-items-inner {
-  padding: 20px 10px 30px;
   display: flex;
   flex-direction: column;
   gap: 35px;
+
+  padding: 20px 10px 30px;
 }
 
 .mobile-menu-item {
   overflow: hidden;
+
   cursor: pointer;
 }
 
 .mobile-menu-item a {
   position: relative;
+
   display: block;
 
+  color: rgb(180, 180, 180);
   font-size: 18px;
   font-weight: 600;
-  color: rgb(180, 180, 180);
+}
+
+.mobile-menu-item-head {
+  display: flex;
+  justify-content: space-between;
 }
 
 .mobile-menu-item-head:hover > a,
@@ -624,6 +673,7 @@ header.search-open nav::after {
   height: 2px;
 
   opacity: 0;
+
   background-color: black;
 
   transition: 0.6s ease;
@@ -631,30 +681,29 @@ header.search-open nav::after {
 
 .mobile-menu-item-head:hover > a::after,
 .mobile-submenu-item:hover > a::after {
-  opacity: 1;
   max-width: 100%;
+
+  opacity: 1;
+}
+
+.mobile-menu-item-head svg {
+  opacity: 0.5;
+
+  transition: 0.5s ease;
+}
+
+.mobile-menu-item-head svg.open {
+  rotate: 180deg;
 }
 
 .mobile-submenu-items {
   max-height: 0;
+
   transition: 1s ease;
 }
 
 .mobile-menu-item.open .mobile-submenu-items {
   max-height: 300px;
-}
-
-.mobile-menu-item-head {
-  display: flex;
-  justify-content: space-between;
-}
-.mobile-menu-item-head svg{
-  transition: 0.5s ease;
-  opacity: 0.5;
-}
-
-.mobile-menu-item-head svg.open {
-  rotate: 180deg;
 }
 
 .mobile-submenu-item {
@@ -672,10 +721,11 @@ header.search-open nav::after {
 
 .mobile-lang-row button {
   border: none;
+
   background-color: transparent;
 
-  font-size: 18px;
   color: black;
+  font-size: 18px;
 
   cursor: pointer;
 }
@@ -687,6 +737,7 @@ header.search-open nav::after {
 .mobile-menu .lang-btn {
   width: fit-content;
   padding: 20px 10px;
+
   font-weight: 300;
 }
 
@@ -705,7 +756,9 @@ header.search-open nav::after {
   left: 12px;
 
   height: 58px;
+
   overflow: hidden;
+
   border-radius: 10px;
 }
 
@@ -716,6 +769,8 @@ header.search-open nav::after {
   object-fit: cover;
   object-position: center;
 }
+
+/* desktop hover */
 
 @media screen and (min-width: 1025px) {
   header:hover {
@@ -731,6 +786,8 @@ header.search-open nav::after {
   }
 }
 
+/* tablet */
+
 @media screen and (max-width: 1024px) {
   .gnb,
   .submenu,
@@ -739,8 +796,8 @@ header.search-open nav::after {
   }
 
   nav {
-    padding: 12px;
     height: 60px;
+    padding: 12px;
   }
 
   nav .logo {
@@ -758,8 +815,10 @@ header.search-open nav::after {
   header.search-open {
     max-height: none;
   }
+
   .search-menu.open {
     height: 100vh;
+
     opacity: 1;
     visibility: visible;
   }
@@ -770,24 +829,28 @@ header.search-open nav::after {
 
   .search-form {
     align-items: center;
+
     padding-bottom: 13px;
   }
+
   .search-input {
+    padding: 0 5px;
+
+    color: #000000;
     font-size: 19px;
     font-weight: 500;
-    color: #000000;
-
-    padding: 0 5px;
-  }
-  .search-tags {
-    padding-top: 14px;
   }
 
   .search-input::placeholder {
     color: #a1a1a1;
   }
+
   .search-form svg {
     font-size: 20px;
+  }
+
+  .search-tags {
+    padding-top: 14px;
   }
 
   .mobile-menu {
@@ -795,9 +858,10 @@ header.search-open nav::after {
   }
 }
 
-@media screen and (max-width:768px) {
-  .mobile-menu-title svg{
+/* mobile */
+
+@media screen and (max-width: 768px) {
+  .mobile-menu-title svg {
     font-size: 25px;
   }
-  
 }
