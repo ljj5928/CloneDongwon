@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { navMenu } from "./navMenu";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleDown, faX ,faMagnifyingGlass} from "@fortawesome/free-solid-svg-icons";
+import {
+  faAngleDown,
+  faX,
+  faMagnifyingGlass,
+} from "@fortawesome/free-solid-svg-icons";
 import "./Header.css";
 
 const Header = () => {
@@ -75,7 +79,7 @@ const Header = () => {
 
   const toggleMobileMenuGroup = (id) => {
     setOpenMobileMenuIds((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
     );
   };
 
@@ -101,12 +105,14 @@ const Header = () => {
       `}
     >
       <nav>
-        <div className="logo">
-          <img
-            src="https://www.dongwon.com/asset/image/logo/dongwon_blue.svg"
-            alt="로고"
-          />
-        </div>
+        <a href="#">
+          <div className="logo">
+            <img
+              src="https://www.dongwon.com/asset/image/logo/dongwon_blue.svg"
+              alt="로고"
+            />
+          </div>
+        </a>
 
         <ul className="gnb">
           {navMenu.map((menu) => (
@@ -262,7 +268,9 @@ const Header = () => {
                   <span>{menu.label}</span>
                   <FontAwesomeIcon
                     icon={faAngleDown}
-                    className={openMobileMenuIds.includes(menu.id) ? "open" : ""}
+                    className={
+                      openMobileMenuIds.includes(menu.id) ? "open" : ""
+                    }
                   />
                 </button>
 
@@ -279,7 +287,9 @@ const Header = () => {
                             <a href="#">{child.label}</a>
                             <FontAwesomeIcon
                               icon={faAngleDown}
-                              className={openSubmenuId === child.id ? "open" : ""}
+                              className={
+                                openSubmenuId === child.id ? "open" : ""
+                              }
                             />
                           </li>
                         ) : (
