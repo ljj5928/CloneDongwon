@@ -1,9 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import * as THREE from "three";
 
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/effect-fade";
-import { Autoplay, EffectFade } from "swiper/modules";
 import video1 from "/video/hero-1.mp4";
 import video2 from "/video/hero-2.mp4";
 import video3 from "/video/hero-3.mp4";
@@ -13,46 +10,422 @@ import { faArrowRightLong } from "@fortawesome/free-solid-svg-icons";
 
 import "./Hero.css";
 
+const vertexShader = `
+  varying vec2 vUv;
+
+  void main() {
+    vUv = uv;
+    gl_Position = vec4(position, 1.0);
+  }
+`;
+
+const fragmentShader = `
+  varying vec2 vUv;
+
+  uniform sampler2D uTextureCurrent;
+  uniform sampler2D uTextureNext;
+  uniform float uMix;
+  uniform float uTime;
+  uniform vec2 uResolution;
+  uniform vec2 uTextureAspectCurrent;
+  uniform vec2 uTextureAspectNext;
+
+  uniform vec2 uMouse;
+  uniform vec2 uPrevMouse;
+  uniform float uStrength;
+  uniform float uRadius;
+
+  vec2 coverUv(vec2 uv, vec2 screenSize, vec2 textureSize) {
+    float screenRatio = screenSize.x / screenSize.y;
+    float textureRatio = textureSize.x / textureSize.y;
+
+    vec2 newUv = uv;
+
+    if (screenRatio > textureRatio) {
+      float scale = textureRatio / screenRatio;
+      newUv.y = (uv.y - 0.5) * scale + 0.5;
+    } else {
+      float scale = screenRatio / textureRatio;
+      newUv.x = (uv.x - 0.5) * scale + 0.5;
+    }
+
+    return newUv;
+  }
+
+  void main() {
+    vec2 uv = vUv;
+    vec2 warpedUv = uv;
+
+    vec2 motion = uMouse - uPrevMouse;
+    float motionLen = length(motion);
+
+    vec2 dir = motionLen > 0.00001 ? normalize(motion) : vec2(1.0, 0.0);
+    vec2 perp = vec2(-dir.y, dir.x);
+
+    vec2 delta = uv - uMouse;
+    float dist = length(delta);
+
+    float headRadius = uRadius;
+    float wakeLength = uRadius * 3.2;
+    float wakeWidth = uRadius * 0.9;
+
+    float head = smoothstep(headRadius, 0.0, dist);
+    head = pow(head, 1.9);
+
+    float along = dot(delta, dir);
+    float across = dot(delta, perp);
+
+    float behind = max(-along, 0.0);
+
+    float wakeBody = smoothstep(wakeLength, 0.0, behind);
+    float wakeSide = exp(-pow(across / wakeWidth, 2.0));
+    float wakeFrontCut = 1.0 - smoothstep(-uRadius * 0.2, uRadius * 0.35, along);
+
+    float wake = wakeBody * wakeSide * wakeFrontCut;
+    wake *= clamp(motionLen * 28.0, 0.0, 1.0);
+
+    vec2 headDir = dist > 0.0001 ? normalize(delta) : vec2(0.0);
+    vec2 headPush = headDir * head * uStrength * 1.05;
+    vec2 wakePull = dir * wake * uStrength * 0.95;
+    vec2 wakeSpread = perp * across * wake * uStrength * 0.14;
+
+    float ripple = sin((behind * 24.0) - uTime * 4.0) * 0.0014 * wake;
+
+    warpedUv -= headPush;
+    warpedUv += wakePull;
+    warpedUv -= wakeSpread;
+    warpedUv += dir * ripple;
+
+    vec2 currentUv = coverUv(warpedUv, uResolution, uTextureAspectCurrent);
+    vec2 nextUv = coverUv(warpedUv, uResolution, uTextureAspectNext);
+
+    vec4 currentColor = texture2D(uTextureCurrent, currentUv);
+    vec4 nextColor = texture2D(uTextureNext, nextUv);
+
+    gl_FragColor = mix(currentColor, nextColor, uMix);
+  }
+`;
+
 const Hero = () => {
   const [introStart, setIntroStart] = useState(false);
-
   const [isTablet, setIsTablet] = useState(window.innerWidth <= 1024);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  const threeWrapRef = useRef(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setIntroStart(true);
     }, 100);
 
-    const handleResize = () => {
+    const handleViewport = () => {
       setIsTablet(window.innerWidth <= 1024);
       setIsMobile(window.innerWidth <= 768);
     };
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener("resize", handleViewport);
 
     return () => {
       clearTimeout(timer);
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", handleViewport);
     };
   }, []);
 
-  const pillWidth = isMobile
-    ? "77vw"
-    : isTablet
-    ? "58vw"
-    : "45vw";
-  const pillHeight = isMobile
-    ? "15vw"
-    : isTablet
-    ? "11vw"
-    : "10vw";
-  const pillY = isMobile
-    ? "31.5vw"
-    : isTablet
-    ? "20.5%"
-    : "25%";
-  
+  useEffect(() => {
+    const wrapper = threeWrapRef.current;
+    if (!wrapper) return;
+
+    let isMounted = true;
+    let animationId = null;
+
+    let renderer;
+    let scene;
+    let camera;
+    let material;
+    let mesh;
+
+    let videos = [];
+    let videoTextures = [];
+
+    let currentIndex = 0;
+    let nextIndex = 1;
+    let transitionStart = performance.now();
+
+    const slideDelay = 5000;
+    const fadeDuration = 1000;
+
+    const mouse = new THREE.Vector2(0.5, 0.5);
+    const targetMouse = new THREE.Vector2(0.5, 0.5);
+    const prevMouse = new THREE.Vector2(0.5, 0.5);
+    const pointerVelocity = new THREE.Vector2(0, 0);
+
+    let effectBoost = 0;
+
+    const getVideoAspectVector = (video) => {
+      const width = video.videoWidth || 1920;
+      const height = video.videoHeight || 1080;
+      return new THREE.Vector2(width, height);
+    };
+
+    const waitForVideoReady = (video) =>
+      new Promise((resolve, reject) => {
+        const onReady = () => {
+          cleanup();
+          resolve(video);
+        };
+
+        const onError = () => {
+          cleanup();
+          reject(new Error(`비디오 로드 실패: ${video.src}`));
+        };
+
+        const cleanup = () => {
+          video.removeEventListener("loadeddata", onReady);
+          video.removeEventListener("canplay", onReady);
+          video.removeEventListener("error", onError);
+        };
+
+        if (video.readyState >= 2) {
+          resolve(video);
+          return;
+        }
+
+        video.addEventListener("loadeddata", onReady, { once: true });
+        video.addEventListener("canplay", onReady, { once: true });
+        video.addEventListener("error", onError, { once: true });
+
+        video.load();
+      });
+
+    const createVideo = async (src) => {
+      const video = document.createElement("video");
+      video.src = src;
+      video.muted = true;
+      video.loop = true;
+      video.playsInline = true;
+      video.preload = "auto";
+      video.crossOrigin = "anonymous";
+
+      await waitForVideoReady(video);
+      return video;
+    };
+
+    const cleanupVideos = () => {
+      videos.forEach((video) => {
+        try {
+          video.pause();
+          video.removeAttribute("src");
+          video.load();
+        } catch (error) {
+          console.error(error);
+        }
+      });
+    };
+
+    const handlePointerMove = (e) => {
+      if (window.innerWidth <= 768) return;
+
+      const rect = wrapper.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width;
+      const y = 1 - (e.clientY - rect.top) / rect.height;
+
+      pointerVelocity.set(x - targetMouse.x, y - targetMouse.y);
+      targetMouse.set(x, y);
+
+      const speed = pointerVelocity.length();
+      effectBoost = Math.min(effectBoost + speed * 5.5, 0.8);
+    };
+
+    const handlePointerLeave = () => {
+      effectBoost = Math.max(effectBoost, 0.04);
+    };
+
+    const handleResize = () => {
+      if (!renderer || !material) return;
+
+      const width = wrapper.clientWidth;
+      const height = wrapper.clientHeight;
+
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      material.uniforms.uResolution.value.set(width, height);
+      material.uniforms.uRadius.value =
+        window.innerWidth <= 1024 ? 0.055 : 0.065;
+    };
+
+    const initThree = async () => {
+      scene = new THREE.Scene();
+      camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+      renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true,
+      });
+
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(wrapper.clientWidth, wrapper.clientHeight);
+      wrapper.appendChild(renderer.domElement);
+
+      videos = await Promise.all([
+        createVideo(video1),
+        createVideo(video2),
+        createVideo(video3),
+      ]);
+
+      if (!isMounted) return;
+
+      videoTextures = videos.map((video) => {
+        const texture = new THREE.VideoTexture(video);
+        texture.minFilter = THREE.LinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        texture.generateMipmaps = false;
+        texture.format = THREE.RGBAFormat;
+        return texture;
+      });
+
+      await Promise.all(
+        videos.map((video) =>
+          video.play().catch(() => {
+            return null;
+          }),
+        ),
+      );
+
+      material = new THREE.ShaderMaterial({
+        uniforms: {
+          uTextureCurrent: { value: videoTextures[0] },
+          uTextureNext: { value: videoTextures[1] },
+          uMix: { value: 0 },
+          uMouse: { value: mouse.clone() },
+          uPrevMouse: { value: prevMouse.clone() },
+          uTime: { value: 0 },
+          uStrength: { value: window.innerWidth <= 1024 ? 0.045 : 0.058 },
+          uRadius: { value: window.innerWidth <= 1024 ? 0.055 : 0.065 },
+          uResolution: {
+            value: new THREE.Vector2(wrapper.clientWidth, wrapper.clientHeight),
+          },
+          uTextureAspectCurrent: { value: getVideoAspectVector(videos[0]) },
+          uTextureAspectNext: { value: getVideoAspectVector(videos[1]) },
+        },
+        vertexShader,
+        fragmentShader,
+      });
+
+      mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
+      scene.add(mesh);
+
+      wrapper.addEventListener("pointermove", handlePointerMove);
+      wrapper.addEventListener("pointerleave", handlePointerLeave);
+      window.addEventListener("resize", handleResize);
+
+      const animate = (time) => {
+        if (!isMounted) return;
+
+        animationId = requestAnimationFrame(animate);
+
+        const now = performance.now();
+        const elapsed = now - transitionStart;
+
+        if (elapsed >= slideDelay) {
+          transitionStart = now;
+          currentIndex = nextIndex;
+          nextIndex = (nextIndex + 1) % videoTextures.length;
+
+          material.uniforms.uTextureCurrent.value = videoTextures[currentIndex];
+          material.uniforms.uTextureNext.value = videoTextures[nextIndex];
+          material.uniforms.uTextureAspectCurrent.value = getVideoAspectVector(
+            videos[currentIndex],
+          );
+          material.uniforms.uTextureAspectNext.value = getVideoAspectVector(
+            videos[nextIndex],
+          );
+        }
+
+        let mixValue = 0;
+        const fadeStart = slideDelay - fadeDuration;
+        const fadeElapsed = now - transitionStart - fadeStart;
+
+        if (fadeElapsed > 0) {
+          mixValue = Math.min(fadeElapsed / fadeDuration, 1);
+        }
+
+        if (window.innerWidth > 768) {
+          prevMouse.lerp(mouse, 0.035);
+          mouse.lerp(targetMouse, 0.18);
+
+          pointerVelocity.multiplyScalar(0.94);
+          effectBoost *= 0.985;
+        } else {
+          prevMouse.lerp(mouse, 0.08);
+          mouse.lerp(new THREE.Vector2(0.5, 0.5), 0.06);
+          pointerVelocity.set(0, 0);
+          effectBoost = 0;
+        }
+
+        const speed = pointerVelocity.length();
+        const strengthBase = window.innerWidth <= 1024 ? 0.036 : 0.046;
+        const strengthBoost = window.innerWidth <= 1024 ? 0.035 : 0.05;
+        const finalStrength =
+          window.innerWidth <= 768
+            ? 0
+            : strengthBase + effectBoost * strengthBoost + speed * 0.06;
+
+        material.uniforms.uTime.value = time * 0.001;
+        material.uniforms.uMix.value = mixValue;
+        material.uniforms.uMouse.value.copy(mouse);
+        material.uniforms.uPrevMouse.value.copy(prevMouse);
+        material.uniforms.uStrength.value = finalStrength;
+
+        renderer.render(scene, camera);
+      };
+
+      animate(0);
+    };
+
+    initThree().catch((error) => {
+      console.error(error);
+    });
+
+    return () => {
+      isMounted = false;
+
+      wrapper.removeEventListener("pointermove", handlePointerMove);
+      wrapper.removeEventListener("pointerleave", handlePointerLeave);
+      window.removeEventListener("resize", handleResize);
+
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+      }
+
+      videoTextures.forEach((texture) => texture.dispose());
+      cleanupVideos();
+
+      if (mesh) {
+        mesh.geometry.dispose();
+      }
+
+      if (material) {
+        material.dispose();
+      }
+
+      if (renderer) {
+        renderer.dispose();
+
+        if (renderer.domElement && wrapper.contains(renderer.domElement)) {
+          wrapper.removeChild(renderer.domElement);
+        }
+      }
+
+      if (wrapper) {
+        wrapper.innerHTML = "";
+      }
+    };
+  }, []);
+
+  const pillWidth = isMobile ? "77vw" : isTablet ? "58vw" : "45vw";
+  const pillHeight = isMobile ? "15vw" : isTablet ? "11vw" : "10vw";
+  const pillY = isMobile ? "31.5vw" : isTablet ? "20.5%" : "25%";
 
   return (
     <div className={`hero-wrap ${introStart ? "intro-start" : ""}`}>
@@ -73,6 +446,7 @@ const Hero = () => {
               />
             </mask>
           </defs>
+
           <rect
             width="100%"
             height="100%"
@@ -83,53 +457,7 @@ const Hero = () => {
       </div>
 
       <section className="hero">
-        <div className="hero-bg">
-          <Swiper
-            modules={[Autoplay, EffectFade]}
-            effect="fade"
-            fadeEffect={{ crossFade: true }}
-            autoplay={{
-              delay: 5000,
-              disableOnInteraction: false,
-            }}
-            loop={true}
-            speed={1000}
-            className="hero-swiper"
-          >
-            <SwiperSlide>
-              <video
-                className="hero-video hero-video-1"
-                src={video1}
-                autoPlay
-                muted
-                loop
-                playsInline
-              />
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <video
-                className="hero-video hero-video-2"
-                src={video2}
-                autoPlay
-                muted
-                loop
-                playsInline
-              />
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <video
-                className="hero-video hero-video-3"
-                src={video3}
-                autoPlay
-                muted
-                loop
-                playsInline
-              />
-            </SwiperSlide>
-          </Swiper>
-        </div>
+        <div ref={threeWrapRef} className="hero-bg-three" />
 
         <h3 className="hero-title">필요에 답하다</h3>
 
