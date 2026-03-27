@@ -110,6 +110,7 @@ const Hero = () => {
   const [introStart, setIntroStart] = useState(false);
   const [isTablet, setIsTablet] = useState(window.innerWidth <= 1024);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isFirstFrameReady, setIsFirstFrameReady] = useState(false);
 
   const threeWrapRef = useRef(null);
 
@@ -144,8 +145,9 @@ const Hero = () => {
     let material;
     let mesh;
 
-    let videos = [];
-    let videoTextures = [];
+    const videoSources = [video1, video2, video3];
+    let videos = [null, null, null];
+    let videoTextures = [null, null, null];
 
     let currentIndex = 0;
     let nextIndex = 1;
@@ -162,8 +164,8 @@ const Hero = () => {
     let effectBoost = 0;
 
     const getVideoAspectVector = (video) => {
-      const width = video.videoWidth || 1920;
-      const height = video.videoHeight || 1080;
+      const width = video?.videoWidth || 1920;
+      const height = video?.videoHeight || 1080;
       return new THREE.Vector2(width, height);
     };
 
@@ -197,21 +199,32 @@ const Hero = () => {
         video.load();
       });
 
-    const createVideo = async (src) => {
+    const createVideo = async (src, preload = "metadata") => {
       const video = document.createElement("video");
       video.src = src;
       video.muted = true;
       video.loop = true;
       video.playsInline = true;
-      video.preload = "auto";
+      video.preload = preload;
       video.crossOrigin = "anonymous";
 
       await waitForVideoReady(video);
       return video;
     };
 
+    const makeTexture = (video) => {
+      const texture = new THREE.VideoTexture(video);
+      texture.minFilter = THREE.LinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      texture.generateMipmaps = false;
+      texture.format = THREE.RGBAFormat;
+      return texture;
+    };
+
     const cleanupVideos = () => {
       videos.forEach((video) => {
+        if (!video) return;
+
         try {
           video.pause();
           video.removeAttribute("src");
@@ -247,11 +260,29 @@ const Hero = () => {
       const height = wrapper.clientHeight;
 
       renderer.setSize(width, height);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setPixelRatio(
+        window.innerWidth <= 768
+          ? 1
+          : Math.min(window.devicePixelRatio, 1.5),
+      );
 
       material.uniforms.uResolution.value.set(width, height);
       material.uniforms.uRadius.value =
         window.innerWidth <= 1024 ? 0.055 : 0.065;
+    };
+
+    const prepareDeferredVideo = async (index) => {
+      try {
+        const video = await createVideo(videoSources[index], "metadata");
+        if (!isMounted) return;
+
+        videos[index] = video;
+        videoTextures[index] = makeTexture(video);
+
+        await video.play().catch(() => null);
+      } catch (error) {
+        console.error(error);
+      }
     };
 
     const initThree = async () => {
@@ -263,39 +294,31 @@ const Hero = () => {
         alpha: true,
       });
 
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setPixelRatio(
+        window.innerWidth <= 768
+          ? 1
+          : Math.min(window.devicePixelRatio, 1.5),
+      );
       renderer.setSize(wrapper.clientWidth, wrapper.clientHeight);
       wrapper.appendChild(renderer.domElement);
 
-      videos = await Promise.all([
-        createVideo(video1),
-        createVideo(video2),
-        createVideo(video3),
-      ]);
-
+      // 첫 번째 영상만 먼저 로드
+      const firstVideo = await createVideo(videoSources[0], "auto");
       if (!isMounted) return;
 
-      videoTextures = videos.map((video) => {
-        const texture = new THREE.VideoTexture(video);
-        texture.minFilter = THREE.LinearFilter;
-        texture.magFilter = THREE.LinearFilter;
-        texture.generateMipmaps = false;
-        texture.format = THREE.RGBAFormat;
-        return texture;
-      });
+      videos[0] = firstVideo;
 
-      await Promise.all(
-        videos.map((video) =>
-          video.play().catch(() => {
-            return null;
-          }),
-        ),
-      );
+      const firstTexture = makeTexture(firstVideo);
+      videoTextures[0] = firstTexture;
+      videoTextures[1] = firstTexture;
+      videoTextures[2] = firstTexture;
+
+      await firstVideo.play().catch(() => null);
 
       material = new THREE.ShaderMaterial({
         uniforms: {
           uTextureCurrent: { value: videoTextures[0] },
-          uTextureNext: { value: videoTextures[1] },
+          uTextureNext: { value: videoTextures[0] },
           uMix: { value: 0 },
           uMouse: { value: mouse.clone() },
           uPrevMouse: { value: prevMouse.clone() },
@@ -305,8 +328,8 @@ const Hero = () => {
           uResolution: {
             value: new THREE.Vector2(wrapper.clientWidth, wrapper.clientHeight),
           },
-          uTextureAspectCurrent: { value: getVideoAspectVector(videos[0]) },
-          uTextureAspectNext: { value: getVideoAspectVector(videos[1]) },
+          uTextureAspectCurrent: { value: getVideoAspectVector(firstVideo) },
+          uTextureAspectNext: { value: getVideoAspectVector(firstVideo) },
         },
         vertexShader,
         fragmentShader,
@@ -319,6 +342,12 @@ const Hero = () => {
       wrapper.addEventListener("pointerleave", handlePointerLeave);
       window.addEventListener("resize", handleResize);
 
+      setIsFirstFrameReady(true);
+
+      // 나머지 영상은 뒤에서 준비
+      prepareDeferredVideo(1);
+      prepareDeferredVideo(2);
+
       const animate = (time) => {
         if (!isMounted) return;
 
@@ -330,16 +359,21 @@ const Hero = () => {
         if (elapsed >= slideDelay) {
           transitionStart = now;
           currentIndex = nextIndex;
-          nextIndex = (nextIndex + 1) % videoTextures.length;
+          nextIndex = (nextIndex + 1) % videoSources.length;
 
-          material.uniforms.uTextureCurrent.value = videoTextures[currentIndex];
-          material.uniforms.uTextureNext.value = videoTextures[nextIndex];
-          material.uniforms.uTextureAspectCurrent.value = getVideoAspectVector(
-            videos[currentIndex],
-          );
-          material.uniforms.uTextureAspectNext.value = getVideoAspectVector(
-            videos[nextIndex],
-          );
+          const currentTexture = videoTextures[currentIndex] || videoTextures[0];
+          const nextTexture =
+            videoTextures[nextIndex] || videoTextures[currentIndex] || videoTextures[0];
+
+          const currentVideo = videos[currentIndex] || videos[0];
+          const nextVideo = videos[nextIndex] || videos[currentIndex] || videos[0];
+
+          material.uniforms.uTextureCurrent.value = currentTexture;
+          material.uniforms.uTextureNext.value = nextTexture;
+          material.uniforms.uTextureAspectCurrent.value =
+            getVideoAspectVector(currentVideo);
+          material.uniforms.uTextureAspectNext.value =
+            getVideoAspectVector(nextVideo);
         }
 
         let mixValue = 0;
@@ -398,7 +432,15 @@ const Hero = () => {
         cancelAnimationFrame(animationId);
       }
 
-      videoTextures.forEach((texture) => texture.dispose());
+      videoTextures.forEach((texture, index) => {
+        if (!texture) return;
+
+        const isDuplicateOfFirst = index !== 0 && texture === videoTextures[0];
+        if (!isDuplicateOfFirst) {
+          texture.dispose();
+        }
+      });
+
       cleanupVideos();
 
       if (mesh) {
@@ -457,7 +499,10 @@ const Hero = () => {
       </div>
 
       <section className="hero">
-        <div ref={threeWrapRef} className="hero-bg-three" />
+        <div
+          ref={threeWrapRef}
+          className={`hero-bg-three ${isFirstFrameReady ? "is-ready" : ""}`}
+        />
 
         <h3 className="hero-title">필요에 답하다</h3>
 
