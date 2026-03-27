@@ -509,7 +509,7 @@ header.search-open:hover .submenu {
   padding-top: 20px;
 }
 
-.search-tags button {
+.search-tags a {
   padding: 5px 10px;
 
   border: 1px solid #94bae9;

@@ -16,7 +16,8 @@ const Media = () => {
       id: 2,
       type: "콘텐츠",
       date: "2026.03.04",
-      title: "예민한 성격과 비판적 사고? 기획에 도움 많이 될 거야 | JOB학사전 EP.13",
+      title:
+        "예민한 성격과 비판적 사고? 기획에 도움 많이 될 거야 | JOB학사전 EP.13",
       image: "./img/media2.webp",
     },
     {
@@ -64,8 +65,10 @@ const Media = () => {
                 뉴스룸
               </button>
             </div>
-
-            <button className="media-more">더 보기<FontAwesomeIcon icon={faArrowRightLong} /></button>
+              <a href="#" className="media-more">
+                더 보기
+                <FontAwesomeIcon icon={faArrowRightLong} />
+              </a>
           </div>
         </div>
 

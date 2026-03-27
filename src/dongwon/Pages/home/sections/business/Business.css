@@ -75,7 +75,6 @@
 
 .business-btn:hover {
   background: #fff;
-
   color: rgb(0, 101, 189);
 }
 
@@ -294,28 +293,69 @@
   transform: translateY(-50%);
 }
 
-.business-tag:hover {
-  background: rgb(0, 101, 189);
+/* :hover */
+@media (hover: hover) and (pointer: fine) {
+  .business-btn:hover {
+    background: #fff;
+    color: rgb(0, 101, 189);
+  }
 
-  color: #fff;
+  .business-btn:hover svg {
+    animation: nudge 1s ease-in-out infinite;
+  }
+
+  .business-tag:hover {
+    background: rgb(0, 101, 189);
+    color: #fff;
+  }
+
+  .business-tag:hover .dot-top {
+    transform: translateX(-50%) translateY(3px);
+  }
+
+  .business-tag:hover .dot-right {
+    transform: translateY(-50%) translateX(-3px);
+  }
+
+  .business-tag:hover .dot-bottom {
+    transform: translateX(-50%) translateY(-3px);
+  }
+
+  .business-tag:hover .dot-left {
+    transform: translateY(-50%) translateX(3px);
+  }
 }
 
-.business-tag:hover .dot-top {
-  transform: translateX(-50%) translateY(3px);
-}
+/* :active */
+  .business-btn:active {
+    background: #fff;
+    color: rgb(0, 101, 189);
+  }
 
-.business-tag:hover .dot-right {
-  transform: translateY(-50%) translateX(-3px);
-}
+  .business-btn:active svg {
+    animation: nudge 1s ease-in-out infinite;
+  }
 
-.business-tag:hover .dot-bottom {
-  transform: translateX(-50%) translateY(-3px);
-}
+  .business-tag:active {
+    background: rgb(0, 101, 189);
+    color: #fff;
+  }
 
-.business-tag:hover .dot-left {
-  transform: translateY(-50%) translateX(3px);
-}
+  .business-tag:active .dot-top {
+    transform: translateX(-50%) translateY(3px);
+  }
 
+  .business-tag:active .dot-right {
+    transform: translateY(-50%) translateX(-3px);
+  }
+
+  .business-tag:active .dot-bottom {
+    transform: translateX(-50%) translateY(-3px);
+  }
+
+  .business-tag:active .dot-left {
+    transform: translateY(-50%) translateX(3px);
+  }
 /* tablet */
 
 @media screen and (max-width: 1024px) {
@@ -346,7 +386,7 @@
   .business-item {
     grid-template-columns: 35% 65%;
   }
-    .business-item:nth-child(1) {
+  .business-item:nth-child(1) {
     top: 60px;
   }
 
@@ -525,22 +565,6 @@
     top: 50%;
     left: 3px;
 
-    transform: translateY(-50%);
-  }
-
-  .business-tag:hover .dot-top {
-    transform: translateX(-50%);
-  }
-
-  .business-tag:hover .dot-right {
-    transform: translateY(-50%);
-  }
-
-  .business-tag:hover .dot-bottom {
-    transform: translateX(-50%);
-  }
-
-  .business-tag:hover .dot-left {
     transform: translateY(-50%);
   }
 }

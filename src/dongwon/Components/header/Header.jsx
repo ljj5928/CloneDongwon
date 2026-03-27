@@ -244,10 +244,10 @@ const Header = () => {
           </form>
 
           <div className="search-tags">
-            <button type="button"># 동원</button>
-            <button type="button"># ESG 경영</button>
-            <button type="button"># 채용</button>
-            <button type="button"># 사업분야</button>
+            <a href="#" ># 동원</a>
+            <a href="#" ># ESG 경영</a>
+            <a href="#" ># 채용</a>
+            <a href="#" ># 사업분야</a>
           </div>
         </div>
       </div>

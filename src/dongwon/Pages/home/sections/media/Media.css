@@ -72,15 +72,7 @@
   font-size: 15px;
 }
 
-.media-more:hover {
-  background: #fff;
 
-  color: rgb(0, 101, 189);
-}
-
-.media-more:hover svg {
-  animation: nudge 1s ease-in-out infinite;
-}
 
 /* media list */
 
@@ -201,6 +193,27 @@
     transform: translateX(-5px);
   }
 }
+
+/* :hover */
+@media (hover: hover) and (pointer: fine) {
+  .media-more:hover {
+    background: #fff;
+    color: rgb(0, 101, 189);
+  }
+
+  .media-more:hover svg {
+    animation: nudge 1s ease-in-out infinite;
+  }
+}
+/* :active */
+  .media-more:active {
+    background: #fff;
+    color: rgb(0, 101, 189);
+  }
+
+  .media-more:active svg {
+    animation: nudge 1s ease-in-out infinite;
+  }
 
 /* tablet */
 

@@ -32,10 +32,6 @@ footer .social-con {
   font-weight: 500;
 }
 
-.social-con a:hover {
-  opacity: 0.7;
-}
-
 .social-con a svg {
   transform: rotate(-45deg) translate(-35px, -10px);
 }
@@ -91,18 +87,6 @@ hr {
   font-size: 1vw;
 }
 
-.policy-nav li a:hover::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 2px;
-
-  width: 100%;
-  height: 1px;
-
-  background-color: black;
-}
-
 /* company nav */
 
 .company-nav {
@@ -152,7 +136,7 @@ hr {
   gap: 10px;
 }
 
-.site-nav button {
+.site-btn {
   display: flex;
   justify-content: center;
 
@@ -171,11 +155,7 @@ hr {
   transition: 0.7s ease;
 }
 
-.site-nav button:hover {
-  background-color: rgb(29, 41, 61);
-}
-
-.site-nav button a {
+.site-btn a {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -184,28 +164,85 @@ hr {
   font-weight: 500;
 }
 
-.site-nav button:hover a {
-  color: white;
-}
-
-.site-nav div button svg {
+.site-btn svg {
   opacity: 0.4;
   transform: rotate(-45deg) translateY(2px);
 }
 
-.site-nav button.family {
+.family-btn {
   min-width: 214px;
+  padding: 15px;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
+  border: 1px solid rgb(29, 41, 61);
+  border-radius: 45px;
+
   background-color: rgb(0, 101, 189);
 
   color: white;
+
+  font-size: 15px;
+
+  transition: 0.7s ease;
 }
 
-.site-nav button.family:hover {
+/* :hover */
+@media (hover: hover) and (pointer: fine) {
+  .policy-nav li a:hover::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 2px;
+
+    width: 100%;
+    height: 1px;
+
+    background-color: black;
+  }
+  .social-con a:hover {
+    opacity: 0.7;
+  }
+  .site-btn:hover {
+    background-color: rgb(29, 41, 61);
+  }
+
+  .site-btn:hover {
+    color: white;
+  }
+
+  .family-btn:hover {
+    background-color: white;
+    color: rgb(0, 101, 189);
+  }
+}
+
+/* :active */
+.policy-nav li a:active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 2px;
+
+  width: 100%;
+  height: 1px;
+
+  background-color: black;
+}
+.social-con a:active {
+  opacity: 0.7;
+}
+.site-btn:active {
+  background-color: rgb(29, 41, 61);
+}
+
+.site-btn:active {
+  color: white;
+}
+
+.family-btn:active {
   background-color: white;
   color: rgb(0, 101, 189);
 }
@@ -337,7 +374,7 @@ hr {
     width: 100%;
   }
 
-  .site-nav button {
+  .site-btn {
     width: 100%;
     min-width: 0;
 

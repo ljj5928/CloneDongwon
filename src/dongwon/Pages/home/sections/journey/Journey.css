@@ -55,7 +55,7 @@
   opacity: 0.5;
 }
 
-.journey-text button {
+.jouney-btn {
   display: flex;
   align-items: center;
   gap: 30px;
@@ -73,19 +73,11 @@
   transition: 0.5s ease;
 }
 
-.journey-text button:hover {
-  background-color: white;
-  color: rgb(0, 101, 189);
-}
-
-.journey-text button:hover svg {
-  animation: nudge 1s ease-in-out infinite;
-}
-
 /* journey video */
 
 .journey .journey-video {
- position: absolute;
+  position: absolute;
+  left: auto;
   right: 30px;
   bottom: 30px;
   z-index: 5;
@@ -204,6 +196,28 @@
     transform: translateX(0);
   }
 }
+
+/* :hover */
+@media (hover: hover) and (pointer: fine) {
+  .jouney-btn:hover {
+    background-color: white;
+    color: rgb(0, 101, 189);
+  }
+
+  .jouney-btn:hover svg {
+    animation: nudge 1s ease-in-out infinite;
+  }
+}
+
+/* :active */
+    .jouney-btn:active {
+    background-color: white;
+    color: rgb(0, 101, 189);
+  }
+
+  .jouney-btn:active svg {
+    animation: nudge 1s ease-in-out infinite;
+  }
 /* tablet */
 
 @media screen and (max-width: 1024px) {
@@ -280,7 +294,7 @@
     word-break: keep-all;
   }
 
-  .journey-text button {
+  .jouney-btn {
     gap: 20px;
 
     min-width: 0;

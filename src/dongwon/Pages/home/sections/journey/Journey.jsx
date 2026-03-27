@@ -49,9 +49,9 @@ const Journey = ({ setJourneyActive }) => {
             세상의 필요를 가장 먼저 찾아냅니다. <br className="pc-br" />
             최적의 답을 가장 먼<span>저 제시합니다.</span>
           </p>
-          <button>
+          <a href="#" className="jouney-btn">
             경영철학 보기 <FontAwesomeIcon icon={faArrowRightLong} />
-          </button>
+          </a>
         </div>
 
         <aside>필요를 찾다</aside>
@@ -72,7 +72,6 @@ const Journey = ({ setJourneyActive }) => {
             </button>
           )}
         </div>
-        
       </div>
       {playing && (
         <button className="video-close-btn" onClick={closeVideoPlay}>

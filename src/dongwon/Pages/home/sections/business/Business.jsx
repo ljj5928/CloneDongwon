@@ -79,10 +79,10 @@ const Business = () => {
               중입니다.
             </p>
 
-            <button className="business-btn">
+            <a href="#" className="business-btn">
               체인 이노베이션 로드맵
               <FontAwesomeIcon icon={faArrowRightLong} />
-            </button>
+            </a>
           </div>
         </div>
 
